@@ -10,7 +10,8 @@ function Note(props) {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [isEditing, setIsEditing] = useState(true);
-  const [copiedText, setCopiedText] = useState("");
+  const [isPasswordCopied, setIsPasswordCopied] = useState(false);
+  const [isUserIdCopied, setIsUserIdCopied] = useState(false);
 
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem(`note_${props.note.id}`));
@@ -41,10 +42,27 @@ function Note(props) {
     setIsEditing(false);
   };
 
-  const handleCopy = (text) => {
-    setCopiedText(`${text} copied to clipboard!`);
+  const handleCancel = () => {
+    if (props.note.id) {
+      // If editing an existing note, delete the note on cancel
+      props.deleteNote(props.note.id);
+    } else {
+      // If creating a new note, discard changes and set editing to false
+      setIsEditing(false);
+    }
+  };
+
+  const handleCopyPassword = () => {
+    setIsPasswordCopied(true);
     setTimeout(() => {
-      setCopiedText("");
+      setIsPasswordCopied(false);
+    }, 2000);
+  };
+
+  const handleCopyUserId = () => {
+    setIsUserIdCopied(true);
+    setTimeout(() => {
+      setIsUserIdCopied(false);
     }, 2000);
   };
 
@@ -56,44 +74,40 @@ function Note(props) {
             <input
               type="text"
               className="form__input"
-              placeholder=" "
+              placeholder="Account Name"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
             />
-            <label htmlFor="" className="form__label">
-              Account Name
-            </label>
           </div>
 
           <div className="form__div">
             <input
               type="text"
               className="form__input"
-              placeholder=" "
+              placeholder="User ID"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
             />
-            <label htmlFor="" className="form__label">
-              User ID
-            </label>
           </div>
 
           <div className="form__div">
             <input
               type="password"
               className="form__input"
-              placeholder=" "
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <label htmlFor="" className="form__label">
-              Password
-            </label>
           </div>
 
-          <button onClick={handleSave} className="form__button">
-            Save
-          </button>
+          <div className="form__buttons">
+            <button onClick={handleSave} className="form__button">
+              Save
+            </button>
+            <button onClick={handleCancel} className="form__button">
+              Cancel
+            </button>
+          </div>
         </>
       ) : (
         <>
@@ -101,7 +115,7 @@ function Note(props) {
             {accountName}
           </p>
           <p>
-            <CopyToClipboard text={userId} onCopy={() => handleCopy("User ID")}>
+            <CopyToClipboard text={userId} onCopy={handleCopyUserId}>
               <FontAwesomeIcon
                 icon={faCopy}
                 style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }}
@@ -110,7 +124,7 @@ function Note(props) {
             {userId}
           </p>
           <p>
-            <CopyToClipboard text={password} onCopy={() => handleCopy("Password")}>
+            <CopyToClipboard text={password} onCopy={handleCopyPassword}>
               <FontAwesomeIcon
                 icon={faCopy}
                 style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }}
@@ -118,8 +132,12 @@ function Note(props) {
             </CopyToClipboard>
             {"*".repeat(password.length)}
           </p>
-          {copiedText && (
-            <p style={{ textAlign: "center", fontSize: "12px", marginTop: "5px" }}>{copiedText}</p>
+          {(isUserIdCopied || isPasswordCopied) && (
+            <p style={{ textAlign: "center", fontSize: "12px", marginTop: "5px" }}>
+              {isUserIdCopied ? "User ID copied to clipboard!" : ""}
+              {isUserIdCopied && isPasswordCopied ? " / " : ""}
+              {isPasswordCopied ? "Password copied to clipboard!" : ""}
+            </p>
           )}
         </>
       )}
