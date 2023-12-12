@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import deleteIcon from "../../assets/delete.svg";
 import "./Note.css";
 
@@ -7,6 +10,7 @@ function Note(props) {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [isEditing, setIsEditing] = useState(true);
+  const [copiedText, setCopiedText] = useState("");
 
   useEffect(() => {
     // Load saved data from local storage when the component mounts
@@ -41,6 +45,14 @@ function Note(props) {
 
     // Set editing to false to hide the input fields after saving
     setIsEditing(false);
+  };
+
+  const handleCopy = (text) => {
+    setCopiedText(`${text} copied to clipboard!`);
+    // Optional: You can set a timeout to clear the copied message after a certain duration
+    setTimeout(() => {
+      setCopiedText("");
+    }, 2000);
   };
 
   return (
@@ -92,15 +104,30 @@ function Note(props) {
         </>
       ) : (
         <>
-          <p>
-            <strong>Account Name:</strong> {accountName}
+          <p style={{ textAlign: "center", fontWeight: "bold", fontSize: "1.2rem", margin: "0" }}>
+            {accountName}
           </p>
           <p>
-            <strong>User ID:</strong> {userId}
+            {userId}
+            <CopyToClipboard text={userId} onCopy={() => handleCopy("User ID")}>
+              <FontAwesomeIcon
+                icon={faCopy}
+                style={{ marginLeft: "5px", cursor: "pointer", fontSize: "14px" }}
+              />
+            </CopyToClipboard>
           </p>
           <p>
-            <strong>Password:</strong> {password}
+            {"*".repeat(password.length)}
+            <CopyToClipboard text={password} onCopy={() => handleCopy("Password")}>
+              <FontAwesomeIcon
+                icon={faCopy}
+                style={{ marginLeft: "5px", cursor: "pointer", fontSize: "14px" }}
+              />
+            </CopyToClipboard>
           </p>
+          {copiedText && (
+            <p style={{ textAlign: "center", fontSize: "12px", marginTop: "5px" }}>{copiedText}</p>
+          )}
         </>
       )}
       <div className="note_footer">
