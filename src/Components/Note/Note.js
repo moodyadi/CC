@@ -13,25 +13,21 @@ function Note(props) {
   const [copiedText, setCopiedText] = useState("");
 
   useEffect(() => {
-    // Load saved data from local storage when the component mounts
     const savedData = JSON.parse(localStorage.getItem(`note_${props.note.id}`));
     if (savedData) {
       setAccountName(savedData.accountName);
       setUserId(savedData.userId);
       setPassword(savedData.password);
-      setIsEditing(false); // Hide the input fields if data is present
+      setIsEditing(false);
     }
   }, [props.note.id]);
 
   const handleSave = () => {
-    // Check if all required fields are filled
     if (accountName.trim() === '' || userId.trim() === '' || password.trim() === '') {
-      // Show an alert or handle the case where fields are not filled
       alert('Please fill in all fields before saving.');
       return;
     }
 
-    // Pass the account information to the parent component for saving
     props.saveNote({
       id: props.note.id,
       accountName,
@@ -39,17 +35,14 @@ function Note(props) {
       password,
     });
 
-    // Save the data to local storage
     const dataToSave = { accountName, userId, password };
     localStorage.setItem(`note_${props.note.id}`, JSON.stringify(dataToSave));
 
-    // Set editing to false to hide the input fields after saving
     setIsEditing(false);
   };
 
   const handleCopy = (text) => {
     setCopiedText(`${text} copied to clipboard!`);
-    // Optional: You can set a timeout to clear the copied message after a certain duration
     setTimeout(() => {
       setCopiedText("");
     }, 2000);
@@ -108,22 +101,22 @@ function Note(props) {
             {accountName}
           </p>
           <p>
-            {userId}
             <CopyToClipboard text={userId} onCopy={() => handleCopy("User ID")}>
               <FontAwesomeIcon
                 icon={faCopy}
-                style={{ marginLeft: "5px", cursor: "pointer", fontSize: "14px" }}
+                style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }}
               />
             </CopyToClipboard>
+            {userId}
           </p>
           <p>
-            {"*".repeat(password.length)}
             <CopyToClipboard text={password} onCopy={() => handleCopy("Password")}>
               <FontAwesomeIcon
                 icon={faCopy}
-                style={{ marginLeft: "5px", cursor: "pointer", fontSize: "14px" }}
+                style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }}
               />
             </CopyToClipboard>
+            {"*".repeat(password.length)}
           </p>
           {copiedText && (
             <p style={{ textAlign: "center", fontSize: "12px", marginTop: "5px" }}>{copiedText}</p>

@@ -1,7 +1,4 @@
 const { app, BrowserWindow } = require('electron');
-const isDev = require('electron-is-dev');
-const path = require('path');
-const url = require('url');
 
 let mainWindow;
 
@@ -14,35 +11,20 @@ function createWindow() {
     },
   });
 
-  if (isDev) {
-    // Load the React app from the development server
-    mainWindow.loadURL('http://localhost:3000');
-  } else {
-    // Load the index.html file in production
-    mainWindow.loadURL(
-      url.format({
-        pathname: path.join(__dirname, 'build', 'index.html'),
-        protocol: 'file:',
-        slashes: true,
-      })
-    );
-  }
+  // Load your React app from the development server
+  mainWindow.loadURL('http://localhost:3000');
 
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
 }
 
-app.on('ready', createWindow);
+app.whenReady().then(createWindow);
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('activate', function () {
-  if (mainWindow === null) {
-    createWindow();
-  }
+  if (mainWindow === null) createWindow();
 });
