@@ -1,7 +1,7 @@
 .note {
   padding: 25px;
   height: 150px;
-  width: 300px;
+  width: 275px;
   display: flex;
   flex-direction: column;
   background-color: blueviolet;

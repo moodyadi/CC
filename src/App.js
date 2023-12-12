@@ -3,12 +3,18 @@ import React, { useEffect, useState } from "react";
 import NoteContainer from "./Components/NoteContainer/NoteContainer";
 import Sidebar from "./Components/Sidebar/Sidebar";
 
-import "./App.css";
+import './styles/App.css';
 
 function App() {
   const [notes, setNotes] = useState(
     JSON.parse(localStorage.getItem("notes-app")) || []
   );
+
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   const addNote = (color) => {
     const tempNotes = [...notes];
@@ -47,7 +53,12 @@ function App() {
   }, [notes]);
 
   return (
-    <div className="App">
+    <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+      <div className="toggle-container" onClick={toggleDarkMode}>
+        <div className={`toggle-button ${darkMode ? 'dark' : 'light'}`}>
+          {darkMode ? '🌙' : '☀️'}
+        </div>
+      </div>
       <Sidebar addNote={addNote} />
       <NoteContainer
         notes={notes}
