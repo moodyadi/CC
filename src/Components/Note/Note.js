@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+
 import deleteIcon from "../../assets/delete.svg";
+import copyIcon from "../../assets/copy.svg";
+
 import "./Note.css";
 
 function Note(props) {
@@ -44,10 +45,8 @@ function Note(props) {
 
   const handleCancel = () => {
     if (props.note.id) {
-      // If editing an existing note, delete the note on cancel
       props.deleteNote(props.note.id);
     } else {
-      // If creating a new note, discard changes and set editing to false
       setIsEditing(false);
     }
   };
@@ -116,19 +115,13 @@ function Note(props) {
           </p>
           <p>
             <CopyToClipboard text={userId} onCopy={handleCopyUserId}>
-              <FontAwesomeIcon
-                icon={faCopy}
-                style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }}
-              />
+              <img src={copyIcon} alt="COPY" style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }} />
             </CopyToClipboard>
             {userId}
           </p>
           <p>
             <CopyToClipboard text={password} onCopy={handleCopyPassword}>
-              <FontAwesomeIcon
-                icon={faCopy}
-                style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }}
-              />
+              <img src={copyIcon} alt="COPY" style={{ marginRight: "5px", cursor: "pointer", fontSize: "14px" }} />
             </CopyToClipboard>
             {"*".repeat(password.length)}
           </p>
